@@ -25,6 +25,10 @@ stack_top:
 _start:
     movl $stack_top, %esp
 
+    # multiboot boot information
+    push %ebx
+    push %eax
+
     call kmain
 
     cli
