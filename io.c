@@ -44,6 +44,33 @@ void putc(char c){
     vga_buffer[pos++] = (color<<8) | c;
 }
 
+void putint(unsigned int val){
+    unsigned char out[10];
+    unsigned char pos = 0;
+    while(val > 0){
+        out[pos++] = '0'+(val % 10);
+        val /= 10;
+    }
+    while(pos){
+        putc(out[--pos]);
+    }
+}
+
+
+static const char hexchars[16] = "0123456789abcdef";
+
+void puthex(unsigned int val){
+    unsigned char out[4];
+    unsigned char pos = 0;
+    while(val > 0){
+        out[pos++] = hexchars[val%0xf];
+        val >>= 4;
+    }
+    while(pos){
+        putc(out[--pos]);
+    }
+}
+
 void puts(const char* str){
     while(*str){
         putc(*str);
