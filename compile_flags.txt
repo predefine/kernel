@@ -1,0 +1,6 @@
+-I.
+-ffreestanding
+-Wall
+-Wextra
+-m32
+-std=gnu32
