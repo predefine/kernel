@@ -1,8 +1,6 @@
 KERNEL := kernel.bin
 KERNEL_OBJECTS := kernel.o io.o idt.o asm.o pic.o
 OBJECTS := main.o $(KERNEL_OBJECTS)
-CC := $(CROSS_COMPILE)gcc
-AS := $(CROSS_COMPILE)as
 
 all: $(KERNEL)
 
