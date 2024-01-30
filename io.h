@@ -1,7 +1,9 @@
 #pragma once
 
+#include <stdint.h>
+
 void clear_display();
 void putc(char c);
 void puts(const char* str);
-void putint(unsigned int val);
-void puthex(unsigned int val);
+void putint(uint32_t val);
+void puthex(uint32_t val);

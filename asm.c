@@ -1,13 +1,13 @@
 #include <asm.h>
 
-void outb(unsigned int port, unsigned char val)
+void outb(uint32_t port, uint8_t val)
 {
     asm volatile ( "outb %b0, %w1" : : "a"(val), "Nd"(port) : "memory");
 }
 
-unsigned char inb(unsigned int port)
+uint8_t inb(uint32_t port)
 {
-    unsigned char ret;
+    uint8_t ret;
     asm volatile ( "inb %w1, %b0"
                    : "=a"(ret)
                    : "Nd"(port)

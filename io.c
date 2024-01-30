@@ -5,7 +5,7 @@ static int pos = 0;
 static char width = 80;
 static char height = 25;
 static int size;
-static unsigned short* vga_buffer = (unsigned short*)0xb8000;
+static uint16_t* vga_buffer = (uint16_t*)0xb8000;
 
 void clear_display(){
     size = width*height;
@@ -44,9 +44,9 @@ void putc(char c){
     vga_buffer[pos++] = (color<<8) | c;
 }
 
-void putint(unsigned int val){
-    unsigned char out[10];
-    unsigned char pos = 0;
+void putint(uint32_t val){
+    uint8_t out[10];
+    uint8_t pos = 0;
     while(val > 0){
         out[pos++] = '0'+(val % 10);
         val /= 10;
@@ -59,9 +59,9 @@ void putint(unsigned int val){
 
 static const char hexchars[16] = "0123456789abcdef";
 
-void puthex(unsigned int val){
-    unsigned char out[4];
-    unsigned char pos = 0;
+void puthex(uint32_t val){
+    uint8_t out[4];
+    uint8_t pos = 0;
     while(val > 0){
         out[pos++] = hexchars[val%0xf];
         val >>= 4;

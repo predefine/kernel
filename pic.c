@@ -15,11 +15,11 @@
 #define ICW1_ICW4    0x01
 #define ICW4_8086    0x01
 
-unsigned char pic_get_irq(unsigned char pic){
-    unsigned char pic_io = !pic ? PIC1_CMD : PIC2_CMD;
+uint8_t pic_get_irq(uint8_t pic){
+    uint8_t pic_io = !pic ? PIC1_CMD : PIC2_CMD;
     outb(pic_io, PIC_READ_ISR);
-    unsigned char isr = inb(pic_io);
-    unsigned char irq = 0;
+    uint8_t isr = inb(pic_io);
+    uint8_t irq = 0;
     while(!(isr&1) && irq<8){
         irq++;
         isr>>=1;
@@ -28,26 +28,17 @@ unsigned char pic_get_irq(unsigned char pic){
     return irq;
 }
 
-void pic_outb(unsigned int port, unsigned char data){
+void pic_outb(uint32_t port, uint8_t data){
     outb(port, data);
     io_wait();
 }
-
-
-struct interrupt_frame {
-    unsigned int ip;
-    unsigned int cs;
-    unsigned int flags;
-    unsigned int sp;
-    unsigned int ss;
-} __attribute__((packed));
 
 extern void pic_irq_handler_asm(void);
 
 static void* pic_irq_handlers_table [16];
 
 void pic_irq_handler(void){
-    unsigned int irq = pic_get_irq(1);
+    uint8_t irq = pic_get_irq(1);
     if(irq != 0xff)
         irq |= 8;
     else
@@ -57,7 +48,7 @@ void pic_irq_handler(void){
         (*(void(*)(void))(pic_irq_handlers_table[irq]))();
 }
 
-void pic_set_irq_handler(unsigned char irq, void* handler){
+void pic_set_irq_handler(uint8_t irq, void* handler){
     if(irq<16)
         pic_irq_handlers_table[irq] = handler;
 }
@@ -75,7 +66,7 @@ __asm__ (
 );
 
 void pic_idt_setup(){
-    for(unsigned char vector = 0x20; vector <= 0x28; vector++){
+    for(uint8_t vector = 0x20; vector <= 0x28; vector++){
         idt_set_descriptor(vector, pic_irq_handler_asm, 0x8E);
     }
 }

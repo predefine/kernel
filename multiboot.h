@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 #define MULTIBOOT_INFO_MEMORY 1
 #define MULTIBOOT_INFO_BOOTDEV 1<<1
 #define MULTIBOOT_INFO_CMDLINE 1<<2
@@ -8,15 +10,15 @@
 #define MULTIBOOT_BOOTLOADER_MAGIC 0x2BADB002
 
 typedef struct {
-        unsigned int flags;
+        uint32_t flags;
 
-        unsigned int mem_lower;
-        unsigned int mem_upper;
+        uint32_t mem_lower;
+        uint32_t mem_upper;
 
-        unsigned int boot_device;
+        uint32_t boot_device;
 
-        unsigned char* cmdline;
-        unsigned int mods_count;
-        unsigned int* mods_addr;
+        uint8_t* cmdline;
+        uint32_t mods_count;
+        uint32_t* mods_addr;
 } multiboot_boot_info;
 #warning "structure multiboot_boot_info is not fully complete!"
