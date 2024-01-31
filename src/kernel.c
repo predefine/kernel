@@ -52,6 +52,14 @@ void kmain(unsigned long magic, multiboot_boot_info* info){
         puts("File size: ");
         putint(fs_getsize(fd, &fs, &tar_fs_ops));
         putc('\n');
+        #define READ_TEST_BUFFER 1000
+        char buffer[READ_TEST_BUFFER];
+        uint32_t readed = fs_read(fd, (char*)&buffer[0], READ_TEST_BUFFER, &fs, &tar_fs_ops);
+        puts("Readed: ");
+        putint(readed);
+        putc('\n');
+        puts(buffer);
+        putc('\n');
         fs_close(fd, &fs, &tar_fs_ops);
         puts("File size after close: ");
         putint(fs_getsize(fd, &fs, &tar_fs_ops));

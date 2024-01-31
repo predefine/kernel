@@ -30,9 +30,11 @@ typedef struct {
 void tar_open(file* _file, filesystem_info* filesystem);
 uint32_t tar_getsize(file* _file, filesystem_info* filesystem);
 void tar_close(file* _file, filesystem_info* filesystem);
+uint32_t tar_read(file* _file, char* buffer, uint32_t count, filesystem_info* filesystem);
 
 static const filesystem_ops tar_fs_ops = {
     .open = tar_open,
     .get_size = tar_getsize,
-    .close = tar_close
+    .close = tar_close,
+    .read = tar_read
 };

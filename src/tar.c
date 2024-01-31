@@ -1,8 +1,9 @@
 #include "fs.h"
 #include <tar.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+
+#define min(a,b) (a<b?a:b)
 
 #define TAR_PADDING 0x200
 
@@ -54,4 +55,14 @@ uint32_t tar_getsize(file* _file, filesystem_info* filesystem){
 void tar_close(file* _file, filesystem_info* filesystem){
     (void)_file;
     (void)filesystem;
+}
+
+uint32_t tar_read(file* _file, char* buffer, uint32_t count, filesystem_info* filesystem){
+    uint32_t to_read = min(count, _file->filesize - _file->pos);
+    if(to_read == 0)
+        return 0;
+    uint32_t read_address = (uint32_t)filesystem->address + _file->data_offset + _file->pos;
+    memcpy((uint8_t*)buffer, (void*)read_address, to_read);
+    _file->pos += to_read;
+    return to_read;
 }

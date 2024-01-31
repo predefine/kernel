@@ -32,8 +32,10 @@ typedef struct {
     void (*open)(file* _file, filesystem_info* filesystem);
     uint32_t (*get_size)(file* _file, filesystem_info* filesystem);
     void (*close)(file* _file, filesystem_info* filesystem);
+    uint32_t (*read) (file* _file, char* buffer, uint32_t count, filesystem_info* filesystem);
 } __attribute__((packed)) filesystem_ops;
 
 uint32_t fs_open(char* name, filesystem_info* filesystem, const filesystem_ops* ops);
 uint32_t fs_getsize(uint32_t fd, filesystem_info* filesystem, const filesystem_ops* ops);
 void fs_close(uint32_t fd, filesystem_info* filesystem, const filesystem_ops* ops);
+uint32_t fs_read(uint32_t fd, char* buffer, uint32_t count, filesystem_info* filesystem, const filesystem_ops* ops);

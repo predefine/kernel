@@ -37,3 +37,11 @@ void fs_close(uint32_t fd, filesystem_info* filesystem, const filesystem_ops* op
     _file.type = FILETYPE_NONE;
     file_fd[fd] = _file;
 }
+
+uint32_t fs_read(uint32_t fd, char* buffer, uint32_t count, filesystem_info* filesystem, const filesystem_ops* ops){
+    file _file = file_fd[fd];
+    if(_file.type != FILETYPE_FILE) return -1;
+    uint32_t readed = ops->read(&_file, buffer, count, filesystem);
+    file_fd[fd] = _file;
+    return readed;
+}
