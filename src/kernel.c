@@ -1,3 +1,4 @@
+#include <fs.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <idt.h>
@@ -39,23 +40,25 @@ void kmain(unsigned long magic, multiboot_boot_info* info){
     putc('\n');
 
 
-    if(info->flags & MULTIBOOT_INFO_MODS){
-        puts("Modules to load: ");
-        putint(info->mods_count);
-        putc('\n');
+    if(info->flags & MULTIBOOT_INFO_MODS && info->mods_count > 0){
         multiboot_module_t* module = (multiboot_module_t*)info->mods_addr;
-        for(uint32_t i = 0; i < info->mods_count; module++, i++){
-            puts("Module start: ");
-            putint(module->mod_start);
-            puts("\nModule end: ");
-            putint(module->mod_end);
-            puts("\nModule size: ");
-            putint(module->mod_end - module->mod_start);
-            puts("\nParsing as tar archive...\n");
-            tar_load((void*)module->mod_start, module->mod_end);
-            puts("===============================\n");
-        }
-        // tar_load(info->mods_addr);
+        file myfile;
+        myfile.filename[0]='m';
+        myfile.filename[1]='y';
+        myfile.filename[2]='f';
+        myfile.filename[3]='i';
+        myfile.filename[4]='l';
+        myfile.filename[5]='e';
+        myfile.filename[6]='.';
+        myfile.filename[7]='t';
+        myfile.filename[8]='x';
+        myfile.filename[9]='t';
+        myfile.filename[10]=0;
+        filesystem_info fs;
+        fs.address = module->mod_start;
+        fs.size = module->mod_end - module->mod_start;
+        tar_open(&myfile, &fs);
+        putint(myfile.filesize);
     }
 
     pic_set_irq_handler(0, timer_irq);

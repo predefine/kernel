@@ -1,27 +1,10 @@
+#include "fs.h"
 #include <tar.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 
 #define TAR_PADDING 0x200
-
-typedef struct {
-    uint8_t filename[100];
-    uint8_t mode[8];
-    uint8_t ouid[8];
-    uint8_t ogid[8];
-    uint8_t size[12];
-    uint8_t last_mod[12];
-    uint8_t checksum[8];
-    uint8_t type;
-    uint8_t linked_name[100];
-    uint8_t ustar[6];
-    uint8_t ustar_version[2];
-    uint8_t owner_username[32];
-    uint8_t owner_groupname[32];
-    uint8_t device_major[8];
-    uint8_t device_minor[8];
-    uint8_t filename_prefix[155];
-} /*__attribute__((packed))*/ tar_entry;
 
 uint32_t oct2bin(uint8_t* str, int size){
     uint32_t count = 0;
@@ -36,23 +19,29 @@ uint32_t padded(uint32_t value){
     return value;
 }
 
-void tar_load(void* addr, uint32_t end){
+void tar_open(file* _file, filesystem_info* filesystem){
+    void* tar_address = (void*)filesystem->address;
+    uint32_t tar_size = filesystem->size;
     uint32_t pos = 0;
-    while((uint32_t)addr+pos != end){
-        tar_entry* entry = addr+pos;
+    _file->type = FILETYPE_NONE;
+    while((uint32_t)tar_address + pos != tar_size){
+        tar_entry* entry = tar_address + pos;
+        if(!*entry->filename) continue;
 
-        // We cant have file without name, maybe we at end of tar!
-        if(!*entry->filename)break;
-
-        uint32_t size = oct2bin(entry->size, 12);
-        puts("Filename: ");
-        puts((const char*)entry->filename);
-        puts("\nSize: ");
-        putint(size);
-        putc('\n');
+        _file->entry_offset = pos;
         pos += padded(sizeof(tar_entry));
-        // Parse data here....
-        pos += padded(size);
+        _file->data_offset = pos;
+        _file->filesize = oct2bin(entry->size, 12);
+        pos += padded(_file->filesize);
 
+        if(memcmp(entry->filename, _file->filename, 100)) continue;
+        if(entry->type == TAR_TYPE_FILE)
+            _file->type = FILETYPE_FILE;
+        else if(entry->type == TAR_TYPE_DIRECTORY)
+            _file->type = FILETYPE_DIRECTORY;
+        else
+            break;
+        _file->pos = 0;
+        break;
     }
 }
