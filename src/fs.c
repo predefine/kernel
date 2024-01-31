@@ -11,7 +11,7 @@ void fs_nameptr_to_array(char* name, char name2[FILENAME_MAX]){
 }
 
 uint32_t fs_open(char* name, filesystem_info* filesystem, const filesystem_ops* ops){
-    file _file = {};
+    file _file;
     fs_nameptr_to_array(name, (char*)&_file.filename);
     ops->open(&_file, filesystem);
     if(_file.type == FILETYPE_NONE)

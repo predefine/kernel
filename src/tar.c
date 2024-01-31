@@ -25,7 +25,7 @@ void tar_open(file* _file, filesystem_info* filesystem){
     uint32_t pos = 0;
     _file->type = FILETYPE_NONE;
     while((uint32_t)tar_address + pos != tar_size){
-        tar_entry* entry = tar_address + pos;
+        tar_entry* entry = (void*)((uint32_t)tar_address + pos);
         if(!*entry->filename) continue;
 
         _file->entry_offset = pos;

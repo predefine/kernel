@@ -3,7 +3,7 @@
 
 idt_entry idt_table[256];
 
-void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags){
+void idt_set_descriptor(uint8_t vector, idt_handler_function isr, uint8_t flags){
     idt_entry* entry = &idt_table[vector];
 
     entry->offset1 = (uint32_t)isr & 0xffff;

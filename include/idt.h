@@ -15,5 +15,7 @@ typedef struct {
     uint32_t* offset;
 } __attribute__((packed)) idt_descriptor;
 
-void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags);
+typedef void (*idt_handler_function)();
+
+void idt_set_descriptor(uint8_t vector, idt_handler_function isr, uint8_t flags);
 void idt_init();

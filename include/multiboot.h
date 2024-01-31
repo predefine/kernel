@@ -30,4 +30,4 @@ typedef struct {
 
         uint32_t _pad;
 } multiboot_module_t;
-#warning "structure multiboot_boot_info is not fully complete!"
+// #warning "structure multiboot_boot_info is not fully complete!"

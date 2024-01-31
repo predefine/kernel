@@ -46,7 +46,7 @@ __asm__ (
 "   iret"
 );
 
-static void* pic_irq_handlers_table [16];
+static pic_irq_handler_function pic_irq_handlers_table [16];
 
 void pic_irq_handler(void){
     uint8_t irq = pic_get_irq(1);
@@ -54,12 +54,12 @@ void pic_irq_handler(void){
         irq |= 8;
     else
         irq = pic_get_irq(0);
-    void* handler = pic_irq_handlers_table[irq];
+    pic_irq_handler_function handler = pic_irq_handlers_table[irq];
     if(handler != 0)
-        (*(void(*)(void))(pic_irq_handlers_table[irq]))();
+        handler();
 }
 
-void pic_set_irq_handler(uint8_t irq, void* handler){
+void pic_set_irq_handler(uint8_t irq, pic_irq_handler_function handler){
     if(irq<16)
         pic_irq_handlers_table[irq] = handler;
 }
