@@ -10,7 +10,7 @@ OBJECTS := $(patsubst src/%.s,build/%.o,$(patsubst src/%.c,build/%.o,$(shell fin
 ALWAYS_REBUILD = $(wildcard *.h)
 
 
-CFLAGS := -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -Iinclude
+CFLAGS := -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -Iinclude -fno-stack-protector
 LDFLAGS := -T $(LINKER_SCRIPT) -nostdlib -z noexecstack
 
 all: $(KERNEL)
