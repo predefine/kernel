@@ -34,6 +34,17 @@ void pic_outb(uint32_t port, uint8_t data){
 }
 
 extern void pic_irq_handler_asm(void);
+__asm__ (
+"esp_back: .long 0 ;"
+"pic_irq_handler_asm:"
+"   pushal ;"
+"   movl %esp, esp_back ;"
+"   call pic_irq_handler ;"
+"   call pic_send_eoi ;"
+"   movl esp_back, %esp ;"
+"   popal ;"
+"   iret"
+);
 
 static void* pic_irq_handlers_table [16];
 
@@ -52,18 +63,6 @@ void pic_set_irq_handler(uint8_t irq, void* handler){
     if(irq<16)
         pic_irq_handlers_table[irq] = handler;
 }
-
-__asm__ (
-"esp_back: .long 0 ;"
-"pic_irq_handler_asm:"
-"   pushal ;"
-"   movl %esp, esp_back ;"
-"   call pic_irq_handler ;"
-"   call pic_send_eoi ;"
-"   movl esp_back, %esp ;"
-"   popal ;"
-"   iret"
-);
 
 void pic_idt_setup(){
     for(uint8_t vector = 0x20; vector <= 0x28; vector++){
