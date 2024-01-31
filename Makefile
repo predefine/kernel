@@ -6,7 +6,7 @@ OBJECTS := $(patsubst src/%.s,build/%.o,$(patsubst src/%.c,build/%.o,$(shell fin
 
 ALWAYS_REBUILD = $(wildcard *.h)
 
-LINKER_SCRIPT := linker.ld
+LINKER_SCRIPT := src/linker.ld
 
 CFLAGS := -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -Iinclude
 LDFLAGS := -T $(LINKER_SCRIPT) -nostdlib -z noexecstack
