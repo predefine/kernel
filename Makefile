@@ -1,6 +1,7 @@
 KERNEL := build/kernel.bin
 INITRD := build/initrd.tar
 INITRD_FILES := initrd/myfile.txt
+INITRD_DIRECTORY := initrd
 
 LINKER_SCRIPT := src/linker.ld
 
@@ -19,7 +20,7 @@ test: $(KERNEL) $(INITRD)
 
 # Todo
 $(INITRD): $(INITRD_FILES)
-	tar cvf $@ $^
+	tar cf $@  -C $(INITRD_DIRECTORY) $(patsubst $(INITRD_DIRECTORY)/%,%,$(INITRD_FILES))
 
 $(KERNEL): $(OBJECTS) $(LINKER_SCRIPT) $(ALWAYS_REBUILD)
 	$(CC) -o $@ $(OBJECTS) $(CFLAGS) $(LDFLAGS)
