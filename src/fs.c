@@ -1,5 +1,4 @@
 #include <fs.h>
-#include <tar.h>
 
 static file file_fd[FD_MAX];
 
@@ -11,10 +10,10 @@ void fs_nameptr_to_array(char* name, char name2[FILENAME_MAX]){
     name2[pos++] = 0;
 }
 
-uint32_t fs_open(char* name, filesystem_info* filesystem){
+uint32_t fs_open(char* name, filesystem_info* filesystem, const filesystem_ops* ops){
     file _file = {};
     fs_nameptr_to_array(name, (char*)&_file.filename);
-    tar_open(&_file, filesystem);
+    ops->open(&_file, filesystem);
     if(_file.type == FILETYPE_NONE)
         return -1;
     int fd;
@@ -23,8 +22,18 @@ uint32_t fs_open(char* name, filesystem_info* filesystem){
     return fd;
 }
 
-uint32_t fs_getsize(uint32_t fd){
+uint32_t fs_getsize(uint32_t fd, filesystem_info* filesystem, const filesystem_ops* ops){
     file _file = file_fd[fd];
     if(_file.type != FILETYPE_FILE) return 0;
-    return _file.filesize;
+    uint32_t size = ops->get_size(&_file, filesystem);
+    file_fd[fd] = _file;
+    return size;
+}
+
+void fs_close(uint32_t fd, filesystem_info* filesystem, const filesystem_ops* ops){
+    file _file = file_fd[fd];
+    if(_file.type == FILETYPE_NONE) return;
+    ops->close(&_file, filesystem);
+    _file.type = FILETYPE_NONE;
+    file_fd[fd] = _file;
 }

@@ -45,3 +45,13 @@ void tar_open(file* _file, filesystem_info* filesystem){
         break;
     }
 }
+
+uint32_t tar_getsize(file* _file, filesystem_info* filesystem){
+    (void)filesystem;
+    return _file->filesize;
+}
+
+void tar_close(file* _file, filesystem_info* filesystem){
+    (void)_file;
+    (void)filesystem;
+}

@@ -28,5 +28,11 @@ typedef struct {
 } __attribute__((packed)) tar_entry;
 
 void tar_open(file* _file, filesystem_info* filesystem);
+uint32_t tar_getsize(file* _file, filesystem_info* filesystem);
+void tar_close(file* _file, filesystem_info* filesystem);
 
-// void tar_load(void* addr, uint32_t end);
+static const filesystem_ops tar_fs_ops = {
+    .open = tar_open,
+    .get_size = tar_getsize,
+    .close = tar_close
+};

@@ -45,16 +45,20 @@ void kmain(unsigned long magic, multiboot_boot_info* info){
         filesystem_info fs;
         fs.address = module->mod_start;
         fs.size = module->mod_end - module->mod_start;
-        uint32_t fd = fs_open("myfile.txt", &fs);
+        uint32_t fd = fs_open("myfile.txt", &fs, &tar_fs_ops);
         puts("File fd: ");
         putint(fd);
         putc('\n');
         puts("File size: ");
-        putint(fs_getsize(fd));
+        putint(fs_getsize(fd, &fs, &tar_fs_ops));
+        putc('\n');
+        fs_close(fd, &fs, &tar_fs_ops);
+        puts("File size after close: ");
+        putint(fs_getsize(fd, &fs, &tar_fs_ops));
         putc('\n');
     }
 
-    pic_set_irq_handler(0, timer_irq);
+    // pic_set_irq_handler(0, timer_irq);
     pic_set_irq_handler(1, ps2_irq);
 
     for(;;);
