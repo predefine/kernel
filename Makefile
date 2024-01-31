@@ -1,10 +1,15 @@
-KERNEL := kernel.bin
-INITRD := initrd.tar
-INITRD_FILES := myfile.txt pic.c stdio.h
-KERNEL_OBJECTS := kernel.o stdio.o idt.o asm.o pic.o tar.o
-OBJECTS := main.o $(KERNEL_OBJECTS)
+KERNEL := build/kernel.bin
+INITRD := build/initrd.tar
+INITRD_FILES := initrd/myfile.txt
+
+OBJECTS := $(patsubst src/%.s,build/%.o,$(patsubst src/%.c,build/%.o,$(shell find src -type f)))
 
 ALWAYS_REBUILD = $(wildcard *.h)
+
+LINKER_SCRIPT := linker.ld
+
+CFLAGS := -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -Iinclude
+LDFLAGS := -T $(LINKER_SCRIPT) -nostdlib -z noexecstack
 
 all: $(KERNEL)
 
@@ -15,13 +20,13 @@ test: $(KERNEL) $(INITRD)
 $(INITRD): $(INITRD_FILES)
 	tar cvf $@ $^
 
-$(KERNEL): $(OBJECTS) linker.ld $(ALWAYS_REBUILD)
-	$(CC) -T linker.ld -m32 -o $@ -ffreestanding -O2 -nostdlib -z noexecstack $(OBJECTS)
+$(KERNEL): $(OBJECTS) $(LINKER_SCRIPT) $(ALWAYS_REBUILD)
+	$(CC) -o $@ $(OBJECTS) $(CFLAGS) $(LDFLAGS)
 
-%.o: %.c $(ALWAYS_REBUILD)
-	$(CC) -o $@ $< -m32 -c -std=gnu99 -ffreestanding -O2 -Wall -Wextra -I.
+build/%.o: src/%.c $(ALWAYS_REBUILD)
+	$(CC) -o $@ $< -c $(CFLAGS)
 
-%.o: %.s
+build/%.o: src/%.s
 	$(AS) --32 -o $@ $<
 
 clean:

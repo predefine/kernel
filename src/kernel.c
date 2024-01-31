@@ -42,6 +42,7 @@ void kmain(unsigned long magic, multiboot_boot_info* info){
     if(info->flags & MULTIBOOT_INFO_MODS){
         puts("Modules to load: ");
         putint(info->mods_count);
+        putc('\n');
         multiboot_module_t* module = (multiboot_module_t*)info->mods_addr;
         for(uint32_t i = 0; i < info->mods_count; module++, i++){
             puts("Module start: ");
