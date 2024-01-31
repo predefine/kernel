@@ -23,9 +23,11 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
-
+    call .a
+.a:
+    popl %edx
     # setup stack
-    leal stack_top, %esp
+    leal stack_top(%edx), %esp
 
     # pass multiboot boot information to c
     push %ebx

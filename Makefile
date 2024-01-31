@@ -1,4 +1,4 @@
-KERNEL := build/kernel.bin
+KERNEL := build/kernel.elf
 INITRD := build/initrd.tar
 INITRD_FILES := initrd/myfile.txt
 INITRD_DIRECTORY := initrd

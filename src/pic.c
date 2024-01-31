@@ -35,15 +35,12 @@ void pic_outb(uint32_t port, uint8_t data){
 
 extern void pic_irq_handler_asm(void);
 __asm__ (
-"esp_back: .long 0 ;"
 "pic_irq_handler_asm:"
 "   pushal ;"
-"   movl %esp, esp_back ;"
 "   call pic_irq_handler ;"
 "   call pic_send_eoi ;"
-"   movl esp_back, %esp ;"
 "   popal ;"
-"   iret"
+"   iret;"
 );
 
 static pic_irq_handler_function pic_irq_handlers_table [16];
