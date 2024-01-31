@@ -1,5 +1,5 @@
 #include <idt.h>
-#include <io.h>
+#include <stdio.h>
 
 idt_entry idt_table[256];
 

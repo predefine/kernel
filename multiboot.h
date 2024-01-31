@@ -21,4 +21,13 @@ typedef struct {
         uint32_t mods_count;
         uint32_t* mods_addr;
 } multiboot_boot_info;
+
+typedef struct {
+        uint32_t mod_start;
+        uint32_t mod_end;
+
+        uint32_t cmdline;
+
+        uint32_t _pad;
+} multiboot_module_t;
 #warning "structure multiboot_boot_info is not fully complete!"

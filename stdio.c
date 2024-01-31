@@ -1,4 +1,4 @@
-#include <io.h>
+#include <stdio.h>
 
 static char color = 0xf;
 static int pos = 0;
