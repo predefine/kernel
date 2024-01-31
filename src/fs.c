@@ -22,3 +22,9 @@ uint32_t fs_open(char* name, filesystem_info* filesystem){
     file_fd[fd] = _file;
     return fd;
 }
+
+uint32_t fs_getsize(uint32_t fd){
+    file _file = file_fd[fd];
+    if(_file.type != FILETYPE_FILE) return 0;
+    return _file.filesize;
+}

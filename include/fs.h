@@ -29,4 +29,4 @@ typedef struct {
 } __attribute__((packed)) filesystem_info;
 
 uint32_t fs_open(char* name, filesystem_info* filesystem);
-
+uint32_t fs_getsize(uint32_t fd);

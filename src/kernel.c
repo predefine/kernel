@@ -46,8 +46,11 @@ void kmain(unsigned long magic, multiboot_boot_info* info){
         fs.address = module->mod_start;
         fs.size = module->mod_end - module->mod_start;
         uint32_t fd = fs_open("myfile.txt", &fs);
-        puts("File openned with fd = ");
+        puts("File fd: ");
         putint(fd);
+        putc('\n');
+        puts("File size: ");
+        putint(fs_getsize(fd));
         putc('\n');
     }
 
