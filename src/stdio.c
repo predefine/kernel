@@ -45,6 +45,7 @@ void putc(char c){
 }
 
 void putint(uint32_t val){
+    if(val == 0) putc('0');
     uint8_t out[10];
     uint8_t pos = 0;
     while(val > 0){
@@ -60,6 +61,7 @@ void putint(uint32_t val){
 static const char hexchars[16] = "0123456789abcdef";
 
 void puthex(uint32_t val){
+    if(val == 0) putc('0');
     uint8_t out[4];
     uint8_t pos = 0;
     while(val > 0){
