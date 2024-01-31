@@ -23,14 +23,18 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
-    movl $stack_top, %esp
 
-    # multiboot boot information
+    # setup stack
+    leal stack_top, %esp
+
+    # pass multiboot boot information to c
     push %ebx
     push %eax
 
+    # call c function
     call kmain
 
+    # halt
     cli
     hlt
     jmp .

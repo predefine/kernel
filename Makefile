@@ -2,11 +2,12 @@ KERNEL := build/kernel.bin
 INITRD := build/initrd.tar
 INITRD_FILES := initrd/myfile.txt
 
-OBJECTS := $(patsubst src/%.s,build/%.o,$(patsubst src/%.c,build/%.o,$(shell find src -type f)))
+LINKER_SCRIPT := src/linker.ld
+
+OBJECTS := $(patsubst src/%.s,build/%.o,$(patsubst src/%.c,build/%.o,$(shell find src -type f ! -name "$(shell basename $(LINKER_SCRIPT))")))
 
 ALWAYS_REBUILD = $(wildcard *.h)
 
-LINKER_SCRIPT := src/linker.ld
 
 CFLAGS := -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -Iinclude
 LDFLAGS := -T $(LINKER_SCRIPT) -nostdlib -z noexecstack
