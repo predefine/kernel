@@ -5,6 +5,8 @@
 #define FILENAME_MAX 128
 #define PATH_MAX 128
 
+#define FD_MAX 32
+
 typedef enum {
     FILETYPE_NONE = 0,
     FILETYPE_FILE = 1,
@@ -25,3 +27,6 @@ typedef struct {
     uint32_t address;
     uint32_t size;
 } __attribute__((packed)) filesystem_info;
+
+uint32_t fs_open(char* name, filesystem_info* filesystem);
+
