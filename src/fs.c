@@ -1,7 +1,5 @@
 #include <fs.h>
 
-static file file_fd[FD_MAX];
-
 void fs_nameptr_to_array(char* name, char name2[FILENAME_MAX]){
     uint32_t pos = 0;
     while(*name != 0  && pos < FILENAME_MAX){
@@ -17,31 +15,31 @@ uint32_t fs_open(char* name, filesystem_info* filesystem, const filesystem_ops* 
     if(_file.type == FILETYPE_NONE)
         return -1;
     int fd;
-    for(fd = 0; fd < FD_MAX && file_fd[fd].type != FILETYPE_NONE; fd++);
-    file_fd[fd] = _file;
+    for(fd = 0; fd < FD_MAX && filesystem->files_fd[fd].type != FILETYPE_NONE; fd++);
+    filesystem->files_fd[fd] = _file;
     return fd;
 }
 
 uint32_t fs_getsize(uint32_t fd, filesystem_info* filesystem, const filesystem_ops* ops){
-    file _file = file_fd[fd];
+    file _file = filesystem->files_fd[fd];
     if(_file.type != FILETYPE_FILE) return 0;
     uint32_t size = ops->get_size(&_file, filesystem);
-    file_fd[fd] = _file;
+    filesystem->files_fd[fd] = _file;
     return size;
 }
 
 void fs_close(uint32_t fd, filesystem_info* filesystem, const filesystem_ops* ops){
-    file _file = file_fd[fd];
+    file _file = filesystem->files_fd[fd];
     if(_file.type == FILETYPE_NONE) return;
     ops->close(&_file, filesystem);
     _file.type = FILETYPE_NONE;
-    file_fd[fd] = _file;
+    filesystem->files_fd[fd] = _file;
 }
 
 uint32_t fs_read(uint32_t fd, char* buffer, uint32_t count, filesystem_info* filesystem, const filesystem_ops* ops){
-    file _file = file_fd[fd];
+    file _file = filesystem->files_fd[fd];
     if(_file.type != FILETYPE_FILE) return -1;
     uint32_t readed = ops->read(&_file, buffer, count, filesystem);
-    file_fd[fd] = _file;
+    filesystem->files_fd[fd] = _file;
     return readed;
 }
