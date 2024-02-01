@@ -3,16 +3,12 @@
 #include <stdio.h>
 #include <idt.h>
 #include <pic.h>
-#include <asm.h>
 #include <multiboot.h>
+#include <keyboard.h>
 #include <tar.h>
 
 void timer_irq(){
     putc('.');
-}
-void ps2_irq(){
-    (void)inb(0x60);
-    putc('?');
 }
 
 void kmain(unsigned long magic, multiboot_boot_info* info){
@@ -22,8 +18,7 @@ void kmain(unsigned long magic, multiboot_boot_info* info){
     }
     idt_init();
     pic_init();
-
-
+    keyboard_init();
 
     clear_display();
     puts("Hello, os!\nSimplest stdio :D\n");
@@ -76,8 +71,16 @@ void kmain(unsigned long magic, multiboot_boot_info* info){
         }
     }
 
+    while(1){
+        keyboard_data data = keyboard_read_byte();
+        puts("Readed ");
+        if(data.extended) puts("extended ");
+        puts("scancode: ");
+        puthex(data.scancode);
+        putc('\n');
+    }
+
     // pic_set_irq_handler(0, timer_irq);
-    pic_set_irq_handler(1, ps2_irq);
 
     for(;;);
 }
