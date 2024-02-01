@@ -52,7 +52,10 @@ void putc(char c){
 }
 
 void putint(uint32_t val){
-    if(val == 0) putc('0');
+    if(val == 0) {
+        putc('0');
+        return;
+    }
     uint8_t out[10];
     uint8_t pos = 0;
     while(val > 0){
@@ -68,16 +71,18 @@ void putint(uint32_t val){
 static const char hexchars[16] = "0123456789abcdef";
 
 void puthex(uint32_t val){
-    if(val == 0) putc('0');
+    if(val == 0) {
+        putc('0');
+        return;
+    }
     uint8_t out[4];
     uint8_t pos = 0;
-    while(val > 0){
-        out[pos++] = hexchars[val%0xf];
+    while(val){
+        out[pos++] = hexchars[val%0x10];
         val >>= 4;
     }
-    while(pos){
-        putc(out[--pos]);
-    }
+    while(pos--)
+        putc(out[pos]);
 }
 
 void puts(const char* str){
