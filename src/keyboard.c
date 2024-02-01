@@ -13,7 +13,7 @@ static uint8_t keyboard_scancode = 0;
 keyboard_data keyboard_read_byte(){
     keyboard_data data;
     while(!(keyboard_flags & KEYBOARD_FLAGS_FULL)) __asm__("pause");
-    data.extended = !!(keyboard_flags & KEYBOARD_EXTENDED_BYTE);
+    data.extended = !!(keyboard_flags & KEYBOARD_FLAGS_EXTENDED);
     data.scancode = keyboard_scancode;
     keyboard_flags &= ~(KEYBOARD_FLAGS_FULL | KEYBOARD_FLAGS_EXTENDED);
     return data;
