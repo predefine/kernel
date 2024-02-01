@@ -1,3 +1,4 @@
+#include "asm.h"
 #include <stdio.h>
 
 static char color = 0xf;
@@ -7,12 +8,18 @@ static char height = 25;
 static int size;
 static uint16_t* vga_buffer = (uint16_t*)0xb8000;
 
+void disable_blinking(){
+    outb(0x3D4, 0x0a);
+    outb(0x3D5, 0x20);
+}
+
 void clear_display(){
     size = width*height;
     for(int i = 0; i < width * height; i++){
         vga_buffer[i] = 0;
     }
     pos = 0;
+    disable_blinking();
 }
 
 void scroll(){
