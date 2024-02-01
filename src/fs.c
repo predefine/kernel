@@ -36,8 +36,6 @@ uint32_t fs_read(uint32_t fd, char* buffer, uint32_t count, filesystem_info* fil
     return readed;
 }
 
-//uint32_t tar_readdir(char* path, uint32_t path_len, char files[READDIR_FILES_MAX][FILENAME_MAX], filesystem_info* filesystem)
-
 uint32_t fs_readdir(char* path, uint32_t path_len, char files[READDIR_FILES_MAX][FILENAME_MAX], filesystem_info* filesystem, const filesystem_ops* ops){
     uint32_t readdir_total = ops->readdir(path, path_len, files, filesystem);
     return readdir_total;
