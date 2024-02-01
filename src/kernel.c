@@ -45,7 +45,7 @@ void kmain(unsigned long magic, multiboot_boot_info* info){
         filesystem_info fs;
         fs.address = module->mod_start;
         fs.size = module->mod_end - module->mod_start;
-        uint32_t fd = fs_open("myfile.txt", &fs, &tar_fs_ops);
+        uint32_t fd = fs_open("dir2/file2.txt", &fs, &tar_fs_ops);
         puts("File fd: ");
         putint(fd);
         putc('\n');
@@ -64,6 +64,16 @@ void kmain(unsigned long magic, multiboot_boot_info* info){
         puts("File size after close: ");
         putint(fs_getsize(fd, &fs, &tar_fs_ops));
         putc('\n');
+
+        char files[READDIR_FILES_MAX][FILENAME_MAX];
+        uint32_t readdir_total = fs_readdir("/dir1", 5, files, &fs, &tar_fs_ops);
+        puts("Files in directory: ");
+        putint(readdir_total);
+        putc('\n');
+        for(uint32_t i = 0; i < readdir_total; i++){
+            puts(files[i]);
+            putc('\n');
+        }
     }
 
     // pic_set_irq_handler(0, timer_irq);

@@ -1,16 +1,8 @@
 #include <fs.h>
-
-void fs_nameptr_to_array(char* name, char name2[FILENAME_MAX]){
-    uint32_t pos = 0;
-    while(*name != 0  && pos < FILENAME_MAX){
-        name2[pos++] = *name++;
-    }
-    name2[pos++] = 0;
-}
-
+#include <string.h>
 uint32_t fs_open(char* name, filesystem_info* filesystem, const filesystem_ops* ops){
     file _file;
-    fs_nameptr_to_array(name, (char*)&_file.filename);
+    char_ptr_to_array(name, (char*)&_file.filename, FILENAME_MAX);
     ops->open(&_file, filesystem);
     if(_file.type == FILETYPE_NONE)
         return -1;
@@ -42,4 +34,11 @@ uint32_t fs_read(uint32_t fd, char* buffer, uint32_t count, filesystem_info* fil
     uint32_t readed = ops->read(&_file, buffer, count, filesystem);
     filesystem->files_fd[fd] = _file;
     return readed;
+}
+
+//uint32_t tar_readdir(char* path, uint32_t path_len, char files[READDIR_FILES_MAX][FILENAME_MAX], filesystem_info* filesystem)
+
+uint32_t fs_readdir(char* path, uint32_t path_len, char files[READDIR_FILES_MAX][FILENAME_MAX], filesystem_info* filesystem, const filesystem_ops* ops){
+    uint32_t readdir_total = ops->readdir(path, path_len, files, filesystem);
+    return readdir_total;
 }

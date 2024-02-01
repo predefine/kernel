@@ -1,4 +1,4 @@
-#include "fs.h"
+#include <fs.h>
 #include <tar.h>
 #include <stdint.h>
 #include <string.h>
@@ -25,17 +25,19 @@ void tar_open(file* _file, filesystem_info* filesystem){
     uint32_t tar_size = filesystem->size;
     uint32_t pos = 0;
     _file->type = FILETYPE_NONE;
-    while((uint32_t)tar_address + pos != tar_size){
+    while(pos < tar_size){
         tar_entry* entry = (void*)((uint32_t)tar_address + pos);
-        if(!*entry->filename) continue;
+
 
         _file->entry_offset = pos;
         pos += padded(sizeof(tar_entry));
+        if(!*entry->filename) continue;
         _file->data_offset = pos;
         _file->filesize = oct2bin(entry->size, 12);
         pos += padded(_file->filesize);
 
         if(memcmp(entry->filename, _file->filename, 100)) continue;
+
         if(entry->type == TAR_TYPE_FILE)
             _file->type = FILETYPE_FILE;
         else if(entry->type == TAR_TYPE_DIRECTORY)
@@ -65,4 +67,33 @@ uint32_t tar_read(file* _file, char* buffer, uint32_t count, filesystem_info* fi
     memcpy((uint8_t*)buffer, (void*)read_address, to_read);
     _file->pos += to_read;
     return to_read;
+}
+
+uint32_t tar_readdir(char* path, uint32_t path_len, char files[READDIR_FILES_MAX][FILENAME_MAX], filesystem_info* filesystem){
+    void* tar_address = (void*)filesystem->address;
+    uint32_t tar_size = filesystem->size;
+    uint32_t pos = 0;
+    uint32_t files_found = 0;
+    // Tar dont have / at filename/dir name start
+    if(*path=='/'){
+        path++;
+        path_len--;
+    }
+    while((pos < tar_size) && files_found < READDIR_FILES_MAX){
+        tar_entry* entry = (void*)((uint32_t)tar_address + pos);
+
+        pos += padded(sizeof(tar_entry));
+        if(!*entry->filename) continue;
+        if(!memcmp(entry->filename, (uint8_t*)path, path_len)){
+            char* filename = (char*) ((uint32_t)entry->filename + path_len + (path_len>0));
+            char* filename2 = filename;
+            uint32_t fnamepos = 0;
+            while(*filename2++ != '/' && fnamepos < (FILENAME_MAX - path_len - 1)){
+                fnamepos++;
+            }
+            char_ptr_to_array(filename, files[files_found++], fnamepos);
+        }
+        pos +=  padded(oct2bin(entry->size, 12));
+    }
+    return files_found;
 }

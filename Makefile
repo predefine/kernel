@@ -1,6 +1,6 @@
 KERNEL := build/kernel.elf
 INITRD := build/initrd.tar
-INITRD_FILES := initrd/myfile.txt
+INITRD_FILES := $(shell find initrd -type f)
 INITRD_DIRECTORY := initrd
 
 LINKER_SCRIPT := src/linker.ld
